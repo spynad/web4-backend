@@ -1,4 +1,4 @@
-package app.controller;
+package app.advice;
 
 import app.exception.PointNotFoundException;
 import org.springframework.http.HttpStatus;
