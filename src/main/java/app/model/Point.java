@@ -1,12 +1,16 @@
 package app.model;
 
 import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "points")
 public class Point {
+    transient private final Logger log = LoggerFactory.getLogger(Point.class);
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -21,7 +25,6 @@ public class Point {
         this.x = x;
         this.y = y;
         this.r = r;
-        hitResult = intersectPoint();
     }
 
     public long getId() {
@@ -64,8 +67,9 @@ public class Point {
         this.hitResult = hitResult;
     }
 
-    private boolean intersectPoint() {
-        return ((x <= 0 && y <= 0) && (y >= -r/2 && x >= -r)  ||
+    public void intersectPoint() {
+        log.info("x: {}, y: {}, r: {}", x, y, r);
+        hitResult = ((x <= 0 && y <= 0) && (y >= -r/2 && x >= -r)  ||
                 ((x*x + y*y) <= (r*r)) && x >= 0 && y >= 0) ||
                 ((y >= -r + x) && (x <= r) && (y >= -r) && (x >= 0) && (y <= 0));
     }

@@ -2,7 +2,8 @@ package app.controller;
 
 import app.configuration.security.JwtTokenProvider;
 import app.model.User;
-import app.payload.JwtResponse;
+import app.payload.request.UserRequest;
+import app.payload.response.JwtResponse;
 import app.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -29,14 +28,14 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
-        if (username == null || password == null) {
+    @PostMapping("/user/login")
+    public ResponseEntity<?> login(@RequestBody UserRequest request) {
+        if (request.getUsername().equals("") || request.getPassword().equals("")) {
             throw new RuntimeException("No username or password");
         }
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
 
             User user = (User) authentication.getPrincipal();
@@ -50,17 +49,17 @@ public class UserController {
         }
     }
 
-    @PostMapping("/auth/register")
-    public ResponseEntity<?> register(@PathVariable String username, @PathVariable String password) {
-        if (username == null || password == null) {
+    @PostMapping("/user/register")
+    public ResponseEntity<?> register(@RequestBody UserRequest request) {
+        if (request.getUsername().equals("") || request.getPassword().equals("")) {
             throw new RuntimeException("No username or password");
         }
 
-        if (repository.findByUsername(username).isPresent()) {
+        if (repository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("User exists");
         }
 
-        User user = new User(username, passwordEncoder.encode(password));
+        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
         repository.save(user);
 
         return ResponseEntity.ok().build();

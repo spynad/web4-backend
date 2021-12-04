@@ -46,9 +46,18 @@ public class PointController {
 
     @PostMapping("/points")
     public ResponseEntity<?> createPoint(@RequestBody Point point) {
+        point.intersectPoint();
         EntityModel<Point> entityModel = assembler.toModel(repository.save(point));
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
     }
+
+    @DeleteMapping("/points")
+    public ResponseEntity<?> deletePoints() {
+        repository.deleteAll();
+
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -7,7 +7,7 @@ apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 
 group 'ru.spynad'
-version '04122021'
+version '05122021'
 
 repositories {
     mavenCentral()
@@ -16,6 +16,7 @@ repositories {
 dependencies {
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
     implementation('org.springframework.boot:spring-boot-devtools')
@@ -27,7 +28,6 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.1'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-
 }
 
 test {

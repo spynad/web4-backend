@@ -12,11 +12,11 @@ import org.springframework.context.annotation.Configuration;
 public class LoadDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
-    @Bean
+    /*@Bean
     CommandLineRunner initDatabase(PointRepository repository) {
         return args -> {
             log.info("Preloading " + repository.save(new Point(0d, 0d, 0d)));
             log.info("Preloading " + repository.save(new Point(0d, 0d, 0d)));
         };
-    }
+    }*/
 }
