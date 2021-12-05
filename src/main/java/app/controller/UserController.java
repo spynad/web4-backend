@@ -5,12 +5,14 @@ import app.model.User;
 import app.payload.request.UserRequest;
 import app.payload.response.JwtResponse;
 import app.repository.UserRepository;
+import app.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,14 +20,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository repository;
-    private final PasswordEncoder passwordEncoder;
+    UserService userService;
 
-    public UserController (AuthenticationManager manager, JwtTokenProvider provider, UserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserController (AuthenticationManager manager, JwtTokenProvider provider, UserService service) {
         authenticationManager = manager;
         jwtTokenProvider = provider;
-        this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
+        userService = service;
     }
 
     @PostMapping("/user/login")
@@ -37,6 +37,8 @@ public class UserController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             User user = (User) authentication.getPrincipal();
 
@@ -54,13 +56,7 @@ public class UserController {
         if (request.getUsername().equals("") || request.getPassword().equals("")) {
             throw new RuntimeException("No username or password");
         }
-
-        if (repository.findByUsername(request.getUsername()).isPresent()) {
-            throw new RuntimeException("User exists");
-        }
-
-        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
-        repository.save(user);
+        userService.saveUser(request);
 
         return ResponseEntity.ok().build();
     }

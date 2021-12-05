@@ -19,12 +19,17 @@ public class Point {
     private double r;
     private boolean hitResult;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     public Point() {}
 
-    public Point(double x, double y, double r) {
+    public Point(double x, double y, double r, User user) {
         this.x = x;
         this.y = y;
         this.r = r;
+        this.user = user;
     }
 
     public long getId() {
@@ -41,6 +46,10 @@ public class Point {
 
     public double getR() {
         return r;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public boolean isHitResult() {
@@ -65,6 +74,10 @@ public class Point {
 
     public void setHitResult(boolean hitResult) {
         this.hitResult = hitResult;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void intersectPoint() {

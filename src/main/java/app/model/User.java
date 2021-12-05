@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -17,16 +20,28 @@ public class User implements UserDetails {
     private String username;
     private String password;
 
-    public User(String username, String password) {
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id",
+                    referencedColumnName = "id"
+            ))
+    private Collection<Role> roles;
+
+    public User(String username, String password, Collection<Role> roles) {
         this.username = username;
         this.password = password;
+        this.roles = roles;
     }
 
     protected User() {}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return roles.stream().map(Role::getUserRole).collect(Collectors.toList());
     }
 
     public long getId() {

@@ -2,6 +2,7 @@ package app.controller;
 
 import app.exception.PointNotFoundException;
 import app.model.PointModelAssembler;
+import app.model.User;
 import app.repository.PointRepository;
 import app.model.Point;
 import com.google.common.collect.Streams;
@@ -9,6 +10,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +31,8 @@ public class PointController {
 
     @GetMapping("/points")
     public CollectionModel<EntityModel<Point>> getAllPoints() {
-        List<EntityModel<Point>> points = Streams.stream(repository.findAll())
+        long userid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        List<EntityModel<Point>> points = repository.findAllByUserId(userid).stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
@@ -44,9 +47,21 @@ public class PointController {
         return assembler.toModel(point);
     }
 
+    @GetMapping("/points/admin/{user_id}")
+    public CollectionModel<EntityModel<Point>> getUserPoints(@PathVariable(name = "user_id") long id) {
+        List<EntityModel<Point>> points = repository.findAllByUserId(id).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(points,
+                linkTo(methodOn(PointController.class).getAllPoints()).withSelfRel());
+    }
+
     @PostMapping("/points")
     public ResponseEntity<?> createPoint(@RequestBody Point point) {
         point.intersectPoint();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        point.setUser(user);
         EntityModel<Point> entityModel = assembler.toModel(repository.save(point));
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -55,9 +70,11 @@ public class PointController {
 
     @DeleteMapping("/points")
     public ResponseEntity<?> deletePoints() {
-        repository.deleteAll();
+        long userid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        repository.deleteAllByUserId(userid);
 
         return ResponseEntity.ok().build();
     }
+
 
 }
