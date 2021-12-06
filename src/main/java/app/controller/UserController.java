@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping("/user/login")
     public ResponseEntity<?> login(@RequestBody UserRequest request) {
         if (request.getUsername().equals("") || request.getPassword().equals("")) {
-            throw new RuntimeException("No username or password");
+            throw new BadCredentialsException("No username or password");
         }
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -54,7 +54,7 @@ public class UserController {
     @PostMapping("/user/register")
     public ResponseEntity<?> register(@RequestBody UserRequest request) {
         if (request.getUsername().equals("") || request.getPassword().equals("")) {
-            throw new RuntimeException("No username or password");
+            throw new BadCredentialsException("No username or password");
         }
         userService.saveUser(request);
 

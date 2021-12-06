@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,7 @@ public class PointController {
         point.intersectPoint();
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         point.setUser(user);
+        point.setTime(LocalDateTime.now());
         EntityModel<Point> entityModel = assembler.toModel(repository.save(point));
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

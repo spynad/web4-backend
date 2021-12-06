@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "points")
@@ -18,6 +20,7 @@ public class Point {
     private double y;
     private double r;
     private boolean hitResult;
+    private String time;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -25,11 +28,12 @@ public class Point {
 
     public Point() {}
 
-    public Point(double x, double y, double r, User user) {
+    public Point(double x, double y, double r, User user, LocalDateTime time) {
         this.x = x;
         this.y = y;
         this.r = r;
         this.user = user;
+        this.time = time.toString();
     }
 
     public long getId() {
@@ -56,6 +60,10 @@ public class Point {
         return hitResult;
     }
 
+    public String getTime() {
+        return time;
+    }
+
     public void setX(double x) {
         this.x = x;
     }
@@ -78,6 +86,10 @@ public class Point {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
     public void intersectPoint() {
