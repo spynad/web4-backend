@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -43,7 +44,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         UserDetails userDetails = repository.findByUsername(jwtTokenProvider.getUsername(token)).orElse(null);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails == null ? List.of() : userDetails.getAuthorities());
+                userDetails, null, userDetails == null ? new ArrayList<>() : userDetails.getAuthorities());
 
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
