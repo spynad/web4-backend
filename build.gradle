@@ -37,7 +37,7 @@ test {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'ru.spynad.app.Web4RestApplication'
+                'Main-Class': 'app.Web4RestApplication'
         )
     }
 }
