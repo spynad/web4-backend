@@ -5,7 +5,6 @@ import app.model.PointModelAssembler;
 import app.model.User;
 import app.repository.PointRepository;
 import app.model.Point;
-import com.google.common.collect.Streams;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;

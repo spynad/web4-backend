@@ -94,8 +94,8 @@ public class Point {
 
     public void intersectPoint() {
         log.info("x: {}, y: {}, r: {}", x, y, r);
-        hitResult = ((x <= 0 && y <= 0) && (y >= -r/2 && x >= -r)  ||
-                ((x*x + y*y) <= (r*r)) && x >= 0 && y >= 0) ||
-                ((y >= -r + x) && (x <= r) && (y >= -r) && (x >= 0) && (y <= 0));
+        hitResult = ((x >= 0 && y >= 0) && (y <= r && x <= r/2)  ||
+                ((x*x + y*y) <= (r*r)) && x <= 0 && y >= 0) ||
+                ((y >= -r/2 + x/2) && (x <= r) && (y >= -r/2) && (x >= 0) && (y <= 0));
     }
 }

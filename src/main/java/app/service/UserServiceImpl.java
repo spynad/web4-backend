@@ -7,6 +7,7 @@ import app.payload.request.UserRequest;
 import app.repository.RoleRepository;
 import app.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     public void saveUser(UserRequest request) {
         if (repository.findByUsername(request.getUsername()).isPresent()) {
-            throw new RuntimeException("User exists");
+            throw new BadCredentialsException("User exists");
         }
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByUserRole(UserRole.ROLE_REGULAR));

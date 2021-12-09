@@ -7,7 +7,7 @@ apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 
 group 'ru.spynad'
-version '05122021'
+version '06122021'
 
 repositories {
     mavenCentral()

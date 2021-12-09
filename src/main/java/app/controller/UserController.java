@@ -47,7 +47,7 @@ public class UserController {
             return ResponseEntity.ok()
                     .body(new JwtResponse(token, user.getId(), user.getUsername()));
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password\n");
         }
     }
 
