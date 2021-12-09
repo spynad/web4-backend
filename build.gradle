@@ -33,3 +33,11 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'ru.spynad.app.Web4RestApplication'
+        )
+    }
+}
